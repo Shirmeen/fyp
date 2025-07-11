@@ -2,5 +2,5 @@
 venv/
 .env/
 myapp.db/
-node_modules/
+
 src/myapp.db/

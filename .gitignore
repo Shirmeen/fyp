@@ -1,0 +1,7 @@
+# Virtual environment
+venv/
+.env/
+myapp.db/
+node_modules/
+src/myapp.db/
+src/image22.jpg/

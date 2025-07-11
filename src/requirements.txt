@@ -1,0 +1,13 @@
+flask
+flask-cors
+pyodbc
+torch
+torchvision
+pandas
+numpy
+scikit-learn
+matplotlib
+opencv-python
+opencv-python-headless
+torch-geometric
+scikit-image

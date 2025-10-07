@@ -254,7 +254,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<div><h1>Test Homepage</h1><p>If you see this, routing is working!</p></div>} /> {/* Test route */}
+        <Route path="/" element={<HomePage />} /> {/* Show homepage by default */}
         <Route path="/home" element={<HomePage />} /> {/* Homepage route */}
         <Route path="/alzheimer-detection" element={<AlzheimerDetectionPage userId={userId} />} /> {/* Pass userId as a prop */}
         <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} handleLogin={handleLogin} />} />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-// import backgroundImage from './giphy1.gif'; // Import the image
+import backgroundImage from './giphy1.gif'; // Import the image
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -46,10 +46,18 @@ const HomePage = () => {
 
 const styles = {
   page: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
     display: 'flex',
     flexDirection: 'column',
-    minHeight: '100vh',
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    margin: 0,
+    padding: 0,
+    overflow: 'hidden',
+    boxSizing: 'border-box',
   },
   navbar: {
     display: 'flex',
@@ -89,22 +97,29 @@ const styles = {
   mainContent: {
     display: 'flex',
     flex: 1,
+    height: 'calc(100vh - 60px)', // Subtract navbar height
+    overflow: 'hidden',
+    boxSizing: 'border-box',
   },
   imageContainer: {
-    flex: 1,
-    backgroundImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    backgroundSize: 'contain', // Adjust to contain the image within the container
+    flex: '0 0 50%', // Fixed 50% width
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundSize: 'contain',
     backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat', // Prevent the image from repeating
-    height: '600px', // Set a fixed height for the container
+    backgroundRepeat: 'no-repeat',
+    height: '100%',
+    boxSizing: 'border-box',
   },
   contentContainer: {
-    flex: 1,
+    flex: '0 0 50%', // Fixed 50% width
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     padding: '20px',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    height: '100%',
+    boxSizing: 'border-box',
+    overflow: 'auto',
   },
   content: {
     textAlign: 'center',

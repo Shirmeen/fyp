@@ -439,8 +439,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 For questions, suggestions, or collaboration opportunities, please contact:
 
-- **Email**: [your-email@university.edu]
-- **GitHub**: [your-github-username]
+- **Email**: shirmeenaamir112@gmail.com
+- **GitHub**: https://github.com/Shirmeen/Shirmeen
 
 ---
 

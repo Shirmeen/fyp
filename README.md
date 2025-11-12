@@ -159,49 +159,17 @@ The ADetectPro system follows a modern three-tier architecture pattern, enabling
 
 The system flow begins when a user uploads an MRI scan through the React frontend. The image is transmitted via REST API to the Flask backend, which orchestrates the entire processing pipeline. The backend performs image segmentation, constructs a graph representation, and feeds it to the pre-trained BGNN model for classification. Results, including predictions and uncertainty estimates, are returned to the frontend for visualization. User authentication and image metadata are persistently stored in the SQLite database throughout this process.
 
-### Interactive Architecture Diagram
+### System Architecture Flowchart
 
-```mermaid
-graph TB
-    subgraph Frontend["🖥️ React Frontend (TypeScript)"]
-        A[Home Page] 
-        B[Login/Signup]
-        C[Detection Interface]
-        D[Results Visualization]
-    end
-    
-    subgraph Backend["⚙️ Flask Backend (Python)"]
-        E[Image Upload API<br/>/upload endpoint]
-        F[Graph Processing Module<br/>K-Means + SLIC + RAG]
-        G[BGNN Model Inference<br/>Monte Carlo Dropout]
-    end
-    
-    subgraph Database["💾 SQLite Database"]
-        H[(User Authentication)]
-        I[(Image Metadata)]
-    end
-    
-    subgraph Model["🧠 Pre-trained Model"]
-        J[bgnn_model.pth<br/>BGNN Weights]
-    end
-    
-    A --> B
-    B --> C
-    C -->|HTTP POST<br/>Multipart Form Data| E
-    E --> F
-    F -->|Graph Data| G
-    G -->|Load Model| J
-    J -->|Predictions + Uncertainty| G
-    G -->|JSON Response| E
-    E -->|Results| D
-    E <-->|Store Metadata| I
-    B <-->|Authenticate| H
-    
-    style Frontend fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    style Backend fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style Database fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    style Model fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
-```
+The following flowchart illustrates the complete data processing pipeline from raw MRI input to final classification output:
+
+<div align="center">
+
+![ADetectPro Architecture Flowchart](images/architecture-flowchart.png)
+
+*Figure: Complete system architecture showing the data flow from MRI dataset through preprocessing, segmentation, model implementation, and final output*
+
+</div>
 
 ### Alternative ASCII Diagram
 

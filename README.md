@@ -122,6 +122,8 @@ The core of ADetectPro utilizes a **Bipartite Graph Neural Network** architectur
 
 ### Preprocessing Pipeline
 
+The preprocessing pipeline transforms raw MRI brain scans into graph structures suitable for neural network analysis. The following steps are performed:
+
 1. **Image Loading**: Grayscale MRI scan input
 2. **Background Removal**: Threshold-based filtering (intensity > 10)
 3. **Normalization**: Pixel values normalized to [0, 1]
@@ -129,6 +131,23 @@ The core of ADetectPro utilizes a **Bipartite Graph Neural Network** architectur
 5. **SLIC Segmentation**: Superpixel generation for graph nodes
 6. **RAG Construction**: Edge creation based on spatial adjacency and color similarity
 7. **Graph Feature Extraction**: RGB statistics for each node
+
+#### Segmentation Visualization
+
+The K-Means segmentation process divides the brain MRI into distinct anatomical regions, enabling precise feature extraction. The segmentation identifies:
+
+- **Gray Matter** (Green): Cortical regions with high neural density
+- **White Matter** (Brown): Internal brain structures and neural pathways
+- **Cerebrospinal Fluid (CSF)** (Dark Brown): Ventricles and fluid-filled spaces
+- **Skull/Outer Structures** (Yellow): Bone and surrounding tissues
+
+<div align="center">
+
+![MRI Segmentation](images/segmentation-example.png)
+
+*Figure: Original MRI slice (left) and color-coded segmentation mask (right) showing distinct brain tissue regions*
+
+</div>
 
 ---
 

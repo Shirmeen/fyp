@@ -134,41 +134,170 @@ The core of ADetectPro utilizes a **Bipartite Graph Neural Network** architectur
 
 ## 🏗️ System Architecture
 
+The ADetectPro system follows a modern three-tier architecture pattern, enabling seamless interaction between the user interface, business logic, and data persistence layers. The architecture is designed for scalability, maintainability, and efficient processing of medical imaging data.
+
+### Architecture Overview
+
+The system flow begins when a user uploads an MRI scan through the React frontend. The image is transmitted via REST API to the Flask backend, which orchestrates the entire processing pipeline. The backend performs image segmentation, constructs a graph representation, and feeds it to the pre-trained BGNN model for classification. Results, including predictions and uncertainty estimates, are returned to the frontend for visualization. User authentication and image metadata are persistently stored in the SQLite database throughout this process.
+
+### Interactive Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph Frontend["🖥️ React Frontend (TypeScript)"]
+        A[Home Page] 
+        B[Login/Signup]
+        C[Detection Interface]
+        D[Results Visualization]
+    end
+    
+    subgraph Backend["⚙️ Flask Backend (Python)"]
+        E[Image Upload API<br/>/upload endpoint]
+        F[Graph Processing Module<br/>K-Means + SLIC + RAG]
+        G[BGNN Model Inference<br/>Monte Carlo Dropout]
+    end
+    
+    subgraph Database["💾 SQLite Database"]
+        H[(User Authentication)]
+        I[(Image Metadata)]
+    end
+    
+    subgraph Model["🧠 Pre-trained Model"]
+        J[bgnn_model.pth<br/>BGNN Weights]
+    end
+    
+    A --> B
+    B --> C
+    C -->|HTTP POST<br/>Multipart Form Data| E
+    E --> F
+    F -->|Graph Data| G
+    G -->|Load Model| J
+    J -->|Predictions + Uncertainty| G
+    G -->|JSON Response| E
+    E -->|Results| D
+    E <-->|Store Metadata| I
+    B <-->|Authenticate| H
+    
+    style Frontend fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    style Backend fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style Database fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style Model fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    React Frontend (TypeScript)                │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │  Home Page   │  │  Login/Signup │  │  Detection   │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└───────────────────────────┬─────────────────────────────────┘
-                             │ HTTP/REST API
-┌───────────────────────────▼─────────────────────────────────┐
-│              Flask Backend (Python)                          │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  Image Upload & Processing Endpoint                  │   │
-│  │  - Receive MRI image                                 │   │
-│  │  - Trigger graph processing pipeline                 │   │
-│  │  - Return predictions with uncertainty               │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  Graph Processing Module                            │   │
-│  │  - K-Means segmentation                              │   │
-│  │  - SLIC superpixel generation                        │   │
-│  │  - Graph construction (nodes & edges)               │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  BGNN Model Inference                                │   │
-│  │  - Load trained model (bgnn_model.pth)              │   │
-│  │  - Monte Carlo Dropout inference                      │   │
-│  │  - Uncertainty quantification                        │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  SQLite Database                                     │   │
-│  │  - User authentication                               │   │
-│  │  - Image metadata storage                            │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+
+### Alternative ASCII Diagram
+
+For environments where Mermaid is not supported, here's a clean ASCII representation:
+
 ```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    🖥️ REACT FRONTEND (TypeScript)                    │
+│                                                                     │
+│  ┌─────────────┐    ┌─────────────┐    ┌──────────────────────┐   │
+│  │ Home Page  │───▶│ Login/     │───▶│ Detection Interface  │   │
+│  │            │    │ Signup      │    │                      │   │
+│  └─────────────┘    └─────────────┘    └──────────────────────┘   │
+│                                                      │              │
+│                                            ┌─────────▼──────────┐   │
+│                                            │ Results Display   │   │
+│                                            │ - Predictions     │   │
+│                                            │ - Probability     │   │
+│                                            │ - Uncertainty     │   │
+│                                            └───────────────────┘   │
+└───────────────────────────────────────────────┬───────────────────┘
+                                                │
+                                    HTTP/REST API (JSON)
+                                    Multipart Form Data
+                                                │
+┌───────────────────────────────────────────────▼───────────────────┐
+│                    ⚙️ FLASK BACKEND (Python)                       │
+│                                                                   │
+│  ┌───────────────────────────────────────────────────────────┐   │
+│  │  📤 Image Upload & Processing Endpoint                    │   │
+│  │  • POST /upload                                           │   │
+│  │  • Receive MRI image (multipart/form-data)                │   │
+│  │  • Validate and save uploaded file                       │   │
+│  │  • Return JSON with predictions and visualization URLs    │   │
+│  └───────────────────────┬───────────────────────────────────┘   │
+│                          │                                         │
+│                          ▼                                         │
+│  ┌───────────────────────────────────────────────────────────┐   │
+│  │  🔄 Graph Processing Module                               │   │
+│  │  • K-Means Segmentation (3 clusters)                    │   │
+│  │  • SLIC Superpixel Generation (10,000 segments)          │   │
+│  │  • Region Adjacency Graph (RAG) Construction            │   │
+│  │  • Node Feature Extraction (RGB statistics)             │   │
+│  │  • Edge Weight Calculation (mean color distance)         │   │
+│  └───────────────────────┬───────────────────────────────────┘   │
+│                          │                                         │
+│                          ▼                                         │
+│  ┌───────────────────────────────────────────────────────────┐   │
+│  │  🧠 BGNN Model Inference                                  │   │
+│  │  • Load Pre-trained Model (bgnn_model.pth)               │   │
+│  │  • Monte Carlo Dropout (20 forward passes)               │   │
+│  │  • Graph Neural Network Forward Pass                     │   │
+│  │  • Uncertainty Quantification (variance calculation)     │   │
+│  │  • Class Probability Distribution (AD, CN, MCI)          │   │
+│  └───────────────────────┬───────────────────────────────────┘   │
+│                          │                                         │
+│                          ▼                                         │
+│  ┌───────────────────────────────────────────────────────────┐   │
+│  │  📊 Response Generation                                   │   │
+│  │  • Generate Probability Visualization Graph               │   │
+│  │  • Calculate Confidence Scores                            │   │
+│  │  • Format JSON Response                                   │   │
+│  └───────────────────────────────────────────────────────────┘   │
+│                                                                   │
+│  ┌───────────────────────────────────────────────────────────┐   │
+│  │  🔐 Authentication Endpoints                              │   │
+│  │  • POST /login  • POST /signup                            │   │
+│  └───────────────────────┬───────────────────────────────────┘   │
+└───────────────────────────┼───────────────────────────────────────┘
+                            │
+                            │ Read/Write
+                            │
+┌───────────────────────────▼───────────────────────────────────────┐
+│                    💾 SQLITE DATABASE                            │
+│                                                                   │
+│  ┌──────────────────────────┐  ┌──────────────────────────┐    │
+│  │  Users Table             │  │  UserImages Table        │    │
+│  │  • id (PK)               │  │  • image_id (PK)        │    │
+│  │  • email (UNIQUE)        │  │  • user_id (FK)          │    │
+│  │  • password (HASHED)    │  │  • image_path            │    │
+│  └──────────────────────────┘  └──────────────────────────┘    │
+└───────────────────────────────────────────────────────────────────┘
+                            │
+                            │ Model Loading
+                            │
+┌───────────────────────────▼───────────────────────────────────────┐
+│                    🧠 PRE-TRAINED MODEL                          │
+│                                                                   │
+│  ┌───────────────────────────────────────────────────────────┐   │
+│  │  bgnn_model.pth                                           │   │
+│  │  • BGNN Architecture Weights                             │   │
+│  │  • Input: Graph Data (nodes, edges, features)            │   │
+│  │  • Output: Class Probabilities + Uncertainty            │   │
+│  └───────────────────────────────────────────────────────────┘   │
+└───────────────────────────────────────────────────────────────────┘
+```
+
+### Component Interaction Flow
+
+1. **User Interaction Layer**: The React frontend provides an intuitive interface for users to authenticate, upload MRI scans, and view results with interactive visualizations.
+
+2. **API Gateway Layer**: Flask REST API endpoints handle HTTP requests, manage file uploads, and coordinate the processing pipeline.
+
+3. **Processing Pipeline**: The graph processing module transforms raw MRI images into graph structures suitable for neural network analysis.
+
+4. **AI Inference Layer**: The BGNN model performs classification with uncertainty quantification, enabling reliable medical predictions.
+
+5. **Data Persistence Layer**: SQLite database stores user credentials and image metadata for session management and audit trails.
+
+### Key Design Principles
+
+- **Separation of Concerns**: Clear boundaries between frontend, backend, and data layers
+- **RESTful API Design**: Standard HTTP methods for predictable interactions
+- **Asynchronous Processing**: Non-blocking operations for better user experience
+- **Scalable Architecture**: Modular design allows for easy extension and maintenance
 
 ---
 

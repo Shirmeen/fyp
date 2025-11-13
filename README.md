@@ -176,95 +176,96 @@ The following flowchart illustrates the complete data processing pipeline from r
 For environments where Mermaid is not supported, here's a clean ASCII representation:
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    🖥️ REACT FRONTEND (TypeScript)                    │
-│                                                                     │
-│  ┌─────────────┐    ┌─────────────┐    ┌──────────────────────┐   │
-│  │ Home Page  │───▶│ Login/     │───▶│ Detection Interface  │   │
-│  │            │    │ Signup      │    │                      │   │
-│  └─────────────┘    └─────────────┘    └──────────────────────┘   │
-│                                                      │              │
-│                                            ┌─────────▼──────────┐   │
-│                                            │ Results Display   │   │
-│                                            │ - Predictions     │   │
-│                                            │ - Probability     │   │
-│                                            │ - Uncertainty     │   │
-│                                            └───────────────────┘   │
-└───────────────────────────────────────────────┬───────────────────┘
-                                                │
-                                    HTTP/REST API (JSON)
-                                    Multipart Form Data
-                                                │
-┌───────────────────────────────────────────────▼───────────────────┐
-│                    ⚙️ FLASK BACKEND (Python)                       │
-│                                                                   │
-│  ┌───────────────────────────────────────────────────────────┐   │
-│  │  📤 Image Upload & Processing Endpoint                    │   │
-│  │  • POST /upload                                           │   │
-│  │  • Receive MRI image (multipart/form-data)                │   │
-│  │  • Validate and save uploaded file                       │   │
-│  │  • Return JSON with predictions and visualization URLs    │   │
-│  └───────────────────────┬───────────────────────────────────┘   │
-│                          │                                         │
-│                          ▼                                         │
-│  ┌───────────────────────────────────────────────────────────┐   │
-│  │  🔄 Graph Processing Module                               │   │
-│  │  • K-Means Segmentation (3 clusters)                    │   │
-│  │  • SLIC Superpixel Generation (10,000 segments)          │   │
-│  │  • Region Adjacency Graph (RAG) Construction            │   │
-│  │  • Node Feature Extraction (RGB statistics)             │   │
-│  │  • Edge Weight Calculation (mean color distance)         │   │
-│  └───────────────────────┬───────────────────────────────────┘   │
-│                          │                                         │
-│                          ▼                                         │
-│  ┌───────────────────────────────────────────────────────────┐   │
-│  │  🧠 BGNN Model Inference                                  │   │
-│  │  • Load Pre-trained Model (bgnn_model.pth)               │   │
-│  │  • Monte Carlo Dropout (20 forward passes)               │   │
-│  │  • Graph Neural Network Forward Pass                     │   │
-│  │  • Uncertainty Quantification (variance calculation)     │   │
-│  │  • Class Probability Distribution (AD, CN, MCI)          │   │
-│  └───────────────────────┬───────────────────────────────────┘   │
-│                          │                                         │
-│                          ▼                                         │
-│  ┌───────────────────────────────────────────────────────────┐   │
-│  │  📊 Response Generation                                   │   │
-│  │  • Generate Probability Visualization Graph               │   │
-│  │  • Calculate Confidence Scores                            │   │
-│  │  • Format JSON Response                                   │   │
-│  └───────────────────────────────────────────────────────────┘   │
-│                                                                   │
-│  ┌───────────────────────────────────────────────────────────┐   │
-│  │  🔐 Authentication Endpoints                              │   │
-│  │  • POST /login  • POST /signup                            │   │
-│  └───────────────────────┬───────────────────────────────────┘   │
-└───────────────────────────┼───────────────────────────────────────┘
-                            │
-                            │ Read/Write
-                            │
-┌───────────────────────────▼───────────────────────────────────────┐
-│                    💾 SQLITE DATABASE                            │
-│                                                                   │
-│  ┌──────────────────────────┐  ┌──────────────────────────┐    │
-│  │  Users Table             │  │  UserImages Table        │    │
-│  │  • id (PK)               │  │  • image_id (PK)        │    │
-│  │  • email (UNIQUE)        │  │  • user_id (FK)          │    │
-│  │  • password (HASHED)    │  │  • image_path            │    │
-│  └──────────────────────────┘  └──────────────────────────┘    │
-└───────────────────────────────────────────────────────────────────┘
-                            │
-                            │ Model Loading
-                            │
-┌───────────────────────────▼───────────────────────────────────────┐
-│                    🧠 PRE-TRAINED MODEL                          │
-│                                                                   │
-│  ┌───────────────────────────────────────────────────────────┐   │
-│  │  bgnn_model.pth                                           │   │
-│  │  • BGNN Architecture Weights                             │   │
-│  │  • Input: Graph Data (nodes, edges, features)            │   │
-│  │  • Output: Class Probabilities + Uncertainty            │   │
-│  └───────────────────────────────────────────────────────────┘   │
-└───────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    🖥️ REACT FRONTEND (TypeScript)                            │
+│                                                                               │
+│  ┌──────────────┐      ┌──────────────┐      ┌──────────────────────────┐  │
+│  │ Home Page   │ ───▶ │ Login/       │ ───▶ │ Detection Interface      │  │
+│  │             │      │ Signup       │      │                          │  │
+│  └──────────────┘      └──────────────┘      └──────────────┬───────────┘  │
+│                                                               │              │
+│                                                               ▼              │
+│                                                      ┌────────────────────┐  │
+│                                                      │ Results Display   │  │
+│                                                      │ • Predictions     │  │
+│                                                      │ • Probability     │  │
+│                                                      │ • Uncertainty     │  │
+│                                                      └────────────────────┘  │
+└───────────────────────────────────────────────────────────────┬───────────────┘
+                                                                │
+                                                    HTTP/REST API (JSON)
+                                                    Multipart Form Data
+                                                                │
+┌───────────────────────────────────────────────────────────────▼───────────────┐
+│                    ⚙️ FLASK BACKEND (Python)                                   │
+│                                                                                 │
+│  ┌───────────────────────────────────────────────────────────────────────────┐ │
+│  │  📤 Image Upload & Processing Endpoint                                    │ │
+│  │  • POST /upload                                                           │ │
+│  │  • Receive MRI image (multipart/form-data)                                │ │
+│  │  • Validate and save uploaded file                                        │ │
+│  │  • Return JSON with predictions and visualization URLs                    │ │
+│  └─────────────────────────────────────┬─────────────────────────────────────┘ │
+│                                        │                                       │
+│                                        ▼                                       │
+│  ┌───────────────────────────────────────────────────────────────────────────┐ │
+│  │  🔄 Graph Processing Module                                               │ │
+│  │  • K-Means Segmentation (3 clusters)                                      │ │
+│  │  • SLIC Superpixel Generation (10,000 segments)                           │ │
+│  │  • Region Adjacency Graph (RAG) Construction                              │ │
+│  │  • Node Feature Extraction (RGB statistics)                               │ │
+│  │  • Edge Weight Calculation (mean color distance)                           │ │
+│  └─────────────────────────────────────┬─────────────────────────────────────┘ │
+│                                        │                                       │
+│                                        ▼                                       │
+│  ┌───────────────────────────────────────────────────────────────────────────┐ │
+│  │  🧠 BGNN Model Inference                                                  │ │
+│  │  • Load Pre-trained Model (bgnn_model.pth)                               │ │
+│  │  • Monte Carlo Dropout (20 forward passes)                                │ │
+│  │  • Graph Neural Network Forward Pass                                      │ │
+│  │  • Uncertainty Quantification (variance calculation)                      │ │
+│  │  • Class Probability Distribution (AD, CN, MCI)                            │ │
+│  └─────────────────────────────────────┬─────────────────────────────────────┘ │
+│                                        │                                       │
+│                                        ▼                                       │
+│  ┌───────────────────────────────────────────────────────────────────────────┐ │
+│  │  📊 Response Generation                                                   │ │
+│  │  • Generate Probability Visualization Graph                               │ │
+│  │  • Calculate Confidence Scores                                            │ │
+│  │  • Format JSON Response                                                   │ │
+│  └───────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  ┌───────────────────────────────────────────────────────────────────────────┐ │
+│  │  🔐 Authentication Endpoints                                              │ │
+│  │  • POST /login  • POST /signup                                            │ │
+│  └─────────────────────────────────────┬─────────────────────────────────────┘ │
+└─────────────────────────────────────────┼───────────────────────────────────────┘
+                                          │
+                                          │ Read/Write
+                                          │
+┌─────────────────────────────────────────▼───────────────────────────────────────┐
+│                    💾 SQLITE DATABASE                                          │
+│                                                                                 │
+│  ┌──────────────────────────────┐      ┌──────────────────────────────┐      │
+│  │  Users Table                  │      │  UserImages Table            │      │
+│  │  • id (PK)                    │      │  • image_id (PK)             │      │
+│  │  • email (UNIQUE)             │      │  • user_id (FK)               │      │
+│  │  • password (HASHED)          │      │  • image_path                 │      │
+│  └──────────────────────────────┘      └──────────────────────────────┘      │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                          │
+                                          │ Model Loading
+                                          │
+┌─────────────────────────────────────────▼───────────────────────────────────────┐
+│                    🧠 PRE-TRAINED MODEL                                        │
+│                                                                                 │
+│  ┌───────────────────────────────────────────────────────────────────────────┐ │
+│  │  bgnn_model.pth                                                           │ │
+│  │  • BGNN Architecture Weights                                             │ │
+│  │  • Input: Graph Data (nodes, edges, features)                             │ │
+│  │  • Output: Class Probabilities + Uncertainty                              │ │
+│  └───────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Interaction Flow

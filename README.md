@@ -527,17 +527,17 @@ fyp/
 ## 👥 Credits
 
 ### Authors
-- **Student Name** - Final Year Project Developer
+- **Student Name** - Shirmeen Aamir
   - Implementation, Model Development, System Architecture
 
 ### Academic Supervision
-- **Supervisor Name** - [University/Department]
+- **Supervisor Name** - Ms. Mamoona Akbar Khan
   - Research Guidance, Methodology Review, Technical Oversight
 
 ### Institution
 - **University Name**
-- **Department of [Department Name]**
-- **Academic Year: [Year]**
+- **Department of [Data Science]**
+- **Academic Year: [2025]**
 
 ### Acknowledgments
 - **ADNI** (Alzheimer's Disease Neuroimaging Initiative) for providing the dataset

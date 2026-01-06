@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from './src/config';
 // import backgroundImage from './giphy.gif'; // Import the background image
 
 const LoginPage = ({ setIsAuthenticated, handleLogin }) => {
@@ -13,7 +14,7 @@ const LoginPage = ({ setIsAuthenticated, handleLogin }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    axios.post('http://127.0.0.1:5000/login', { email, password })
+    axios.post(`${API_URL}/login`, { email, password })
       .then(response => {
         console.log(response.data);
         setMessage(response.data.message);

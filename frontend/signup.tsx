@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from './src/config';
 
 interface SignupProps {
   setIsAuthenticated: (auth: boolean) => void;
@@ -23,7 +24,7 @@ const Signup: React.FC<SignupProps> = ({ setIsAuthenticated, handleLogin }) => {
     }
 
     try {
-      const response = await axios.post('http://127.0.0.1:5000/signup', { email, password }, {
+      const response = await axios.post(`${API_URL}/signup`, { email, password }, {
         headers: {
           'Content-Type': 'application/json',
         },

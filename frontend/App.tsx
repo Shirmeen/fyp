@@ -6,6 +6,7 @@ import LoginPage from './login';
 import Signup from './signup';
 import DatabaseVersion from './DatabaseVersion.jsx';
 import HomePage from "./componenets/HomePage.jsx"
+import { API_URL } from './src/config';
 const AlzheimerDetectionPage = ({ userId }) => {
   const [image, setImage] = useState(null);
   const [result, setResult] = useState<string | null>(null);
@@ -40,7 +41,7 @@ const AlzheimerDetectionPage = ({ userId }) => {
     formData.append('image', image);
     // formData.append('user_id', userId); // Comment out user_id if not needed
 
-    axios.post('http://127.0.0.1:5000/upload', formData, {
+    axios.post(`${API_URL}/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

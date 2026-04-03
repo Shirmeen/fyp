@@ -49,7 +49,8 @@ class BGNNClassifier(torch.nn.Module):
         return mean, uncertainty
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+# Allow CORS from any origin for simplicity, or specific domain in production
+CORS(app)
 
 def get_db_connection():
     conn = sqlite3.connect('myapp.db')
@@ -166,7 +167,7 @@ def upload_image():
         plot_path = os.path.join('uploads', plot_filename)
         plt.savefig(plot_path)
         plt.close()
-        plot_url = f"http://127.0.0.1:5000/uploads/{plot_filename}"
+        plot_url = f"{request.host_url}uploads/{plot_filename}"
 
         conn = get_db_connection()
         try:
@@ -182,7 +183,7 @@ def upload_image():
         finally:
             conn.close()
 
-        image_url = f"http://127.0.0.1:5000/uploads/{unique_filename}"
+        image_url = f"{request.host_url}uploads/{unique_filename}"
         return jsonify({
             "message": "Image uploaded and processed successfully",
             "result": result,
@@ -270,4 +271,5 @@ def signup():
     return jsonify({"message": "Signup successful", "user_id": new_user["id"]}), 201
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)

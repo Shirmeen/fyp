@@ -6,7 +6,8 @@ const DatabaseVersion = () => {
   const [version, setVersion] = useState('');
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/')
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000';
+    axios.get(`${apiBaseUrl}/`)
       .then(response => {
         setVersion(response.data);
       })

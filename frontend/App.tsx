@@ -40,7 +40,8 @@ const AlzheimerDetectionPage = ({ userId }) => {
     formData.append('image', image);
     // formData.append('user_id', userId); // Comment out user_id if not needed
 
-    axios.post('http://127.0.0.1:5000/upload', formData, {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000';
+    axios.post(`${apiBaseUrl}/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

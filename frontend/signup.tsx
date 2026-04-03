@@ -22,8 +22,9 @@ const Signup: React.FC<SignupProps> = ({ setIsAuthenticated, handleLogin }) => {
       return;
     }
 
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000';
     try {
-      const response = await axios.post('http://127.0.0.1:5000/signup', { email, password }, {
+      const response = await axios.post(`${apiBaseUrl}/signup`, { email, password }, {
         headers: {
           'Content-Type': 'application/json',
         },

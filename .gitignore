@@ -13,9 +13,7 @@ backend/venv/
 backend/uploads/
 backend/myapp.db
 backend/node_modules/
-backend/*.pth
-# Keep the model files if they are small, but PyTorch models are usually large.
-# Better to host on Git LFS or a cloud drive if they are >100MB.
+# backend/*.pth  ← model files are small (~137KB), kept in repo
 
 # General
 .env
